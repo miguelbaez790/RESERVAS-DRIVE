@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrivePizza - Sistema de Reservas</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Encabezado -->
+    <header class="header">
+        <h1>🍕 DrivePizza</h1>
+        <h2>Sistema de Reservas</h2>
+    </header>
+
+    <!-- ============================
+          DASHBOARD ADMINISTRATIVO
+    ============================= -->
+    <section class="dashboard">
+        <h2>📊 Panel Administrativo</h2>
+
+        <div class="dash-cards">
+
+           <!-- Total de reservas -->
+<div class="dash-card total-general">
+    <h3>Total Reservas</h3>
+    <p id="totalReservas">0</p>
+</div>
+<div id="popupPendientes" class="popup">
+    <div class="popup-content">
+        <h2>Reservas Pendientes de Hoy</h2>
+        <ul id="listaPendientesHoy"></ul>
+
+    </div>
+</div>
+
+
+<!-- Reservas Cañaveral -->
+<div class="dash-card sede-canaveral">
+    <h3>Sede Cañaveral</h3>
+    <p id="reservasCanaveral">0</p>
+</div>
+
+<!-- Reservas Piedecuesta -->
+<div class="dash-card sede-piedecuesta">
+    <h3>Sede Piedecuesta</h3>
+    <p id="reservasPiedecuesta">0</p>
+</div>
+
+<!-- Reservas Cabecera -->
+<div class="dash-card sede-cabecera">
+    <h3>Sede Cabecera</h3>
+    <p id="reservasCabecera">0</p>
+</div>
+
+<!-- Próximos Clientes -->
+<div class="dash-card wide proximos">
+    <h3>Próximos Clientes</h3>
+    <ul id="proximosClientes"></ul>
+</div>
+
+
+        </div>
+    </section>
+
+    <!-- Contenedor principal -->
+    <main class="container">
+
+        <form id="formReserva" class="form">
+
+            <h3>Realizar Reserva</h3>
+
+            <!-- Sede -->
+            <label for="sede">Sede:</label>
+            <select id="sede" required>
+                <option value="">Seleccione una sede</option>
+                <option value="Cañaveral">Cañaveral</option>
+                <option value="Piedecuesta">Piedecuesta</option>
+                <option value="Cabecera">Cabecera</option>
+            </select>
+
+            <!-- Nombre completo -->
+            <label for="nombre">Nombre completo:</label>
+            <input type="text" id="nombre" placeholder="Ej: Deisy Garzón" required>
+
+            <!-- Día -->
+            <label for="dia">Día:</label>
+            <select id="dia" required>
+                <option value="">Seleccione</option>
+                <option>Viernes</option>
+                <option>Sábado</option>
+                <option>Domingo</option>
+                <option>Lunes</option>
+                <option>Martes</option>
+                <option>Miércoles</option>
+                <option>Jueves</option>
+            </select>
+
+            <!-- Fecha -->
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" required>
+
+            <!-- Hora -->
+            <label for="hora">Hora:</label>
+            <input type="time" id="hora" required>
+
+            <!-- Cantidad de personas -->
+            <label for="personas">Cantidad de personas:</label>
+            <input type="number" id="personas" min="1" placeholder="Ej: 6" required>
+
+            <!-- Número de contacto -->
+            <label for="contacto">Número de contacto:</label>
+            <input type="tel" id="contacto" placeholder="Ej: 3153471416" maxlength="10" required>
+
+            <button type="submit" class="btn" id="btnSubmit">Registrar Reserva</button>
+
+        </form>
+
+        <!-- Contenedor para mostrar las reservas -->
+        <section class="reservas">
+            <h3>Reservas Registradas</h3>
+            <table id="tablaReservas">
+                <thead>
+                    <tr>
+                        <th>Sede</th>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Personas</th>
+                        <th>Contacto</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
