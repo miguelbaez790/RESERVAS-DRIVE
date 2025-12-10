@@ -359,4 +359,17 @@ form input:focus {
         font-size: 28px;
     }
 }
+.aceptar-btn {
+    padding: 6px 12px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 8px;
+    transition: 0.3s;
+}
+.aceptar-btn:hover { background: #218838; }
+
 

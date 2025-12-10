@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>DIVE PIZZA - Reservas Cabecera</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f7f7f7;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* ENCABEZADO */
+    .header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: #fff;
+        padding: 15px 25px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .header img {
+        height: 60px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+        margin: 0;
+        color: #d63232;
+        font-weight: bold;
+    }
+
+    /* CALENDARIO */
+    .calendar {
+        width: 350px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .calendar h2 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+    }
+
+    .day {
+        padding: 12px;
+        background: #ececec;
+        text-align: center;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: bold;
+    }
+
+    .day:hover {
+        background: #d63232;
+        color: #fff;
+    }
+
+    /* Días con reservas */
+    .day.reservado {
+        background: #ffb3b3;
+        border: 2px solid #d63232;
+    }
+
+    /* RESERVAS */
+    .reservas-container {
+        text-align: center;
+        margin-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .reserva {
+        background: #fff;
+        margin: 6px auto;
+        width: 80%;
+        padding: 10px;
+        border-left: 5px solid #d63232;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        font-size: 15px;
+    }
+</style>
+</head>
+<body>
+
+<!-- ENCABEZADO -->
+<div class="header">
+    <img src="logo.png" alt="Logo DIVE PIZZA">
+    <h1>DIVE PIZZA cabecera – Reservas</h1>
+</div>
+
+<!-- CALENDARIO -->
+<div class="calendar">
+    <h2>Calendario</h2>
+
+    <div class="days" id="dias"></div>
+
+    <div class="reservas-container" id="reservas">
+        <h3>Selecciona un día para ver las reservas</h3>
+    </div>
+</div>
+<script src="cabecera.js"></script>
+<script type="module" src="firebase.js"></script>
+<script type="module" src="cabecera.js"></script>
+</body>
+</html>

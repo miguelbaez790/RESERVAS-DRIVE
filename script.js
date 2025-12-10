@@ -1,273 +1,131 @@
-// ===============================
-//  SISTEMA DE RESERVAS DRIVEPIZZA CON ROLES
-// ===============================
+// script.js
+import { db } from "./firebase.js";
+import { ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// ===============================
-// 🔐 VERIFICAR LOGIN
-// ===============================
-const rolUsuario = localStorage.getItem("rolUsuario");
+const normalizarSede = s => s.toLowerCase().replace(/ñ/g, "n");
 
-// Si no hay sesión → volver al login
-if (!rolUsuario) {
-    window.location.href = "login.html";
-}
-
-// ===============================
-//  OBTENER ELEMENTOS
-// ===============================
-const form = document.getElementById("formReserva");
-const tablaBody = document.querySelector("#tablaReservas tbody");
-
-// Dashboard
-const totalReservasTXT = document.getElementById("totalReservas");
-const canaveralTXT = document.getElementById("reservasCanaveral");
-const piedecuestaTXT = document.getElementById("reservasPiedecuesta");
-const cabeceraTXT = document.getElementById("reservasCabecera");
-const proximosClientesList = document.getElementById("proximosClientes");
-
-// Mostrar el rol en pantalla
-
-
-// ===============================
-// BLOQUEAR SEDE SEGÚN ROL
-// ===============================
-if (rolUsuario !== "administrador") {
-    const sedeInput = document.getElementById("sede");
-
-    sedeInput.value = capitalizar(rolUsuario);
-    sedeInput.disabled = true;
-}
-
-// ===============================
-//  CARGAR RESERVAS AL INICIAR
-// ===============================
 document.addEventListener("DOMContentLoaded", () => {
-    cargarReservas();
-    actualizarDashboard();
-});
+  const form = document.getElementById("formReserva");
+  const tabla = document.querySelector("#tablaReservas tbody");
 
-let idEdicion = null;
+  const totalReservas = document.getElementById("totalReservas");
+  const reservasCabecera = document.getElementById("reservasCabecera");
+  const reservascanaveral = document.getElementById("reservascanaveral");
+  const reservasPiedecuesta = document.getElementById("reservasPiedecuesta");
 
-// ===============================
-// GUARDAR O EDITAR RESERVA
-// ===============================
-function guardarReserva(reserva) {
-    let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
-
-    reserva.estado = "pendiente"; // 🔥 estado inicial
-
-    reservas.push(reserva);
-    localStorage.setItem("reservasDrivePizza", JSON.stringify(reservas));
-}
-
-function actualizarReserva(reservaActualizada) {
-    let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
-
-    reservas = reservas.map(r => 
-        r.id === reservaActualizada.id 
-        ? { ...reservaActualizada, estado: r.estado } 
-        : r
-    );
-
-    localStorage.setItem("reservasDrivePizza", JSON.stringify(reservas));
-}
-
-form.addEventListener("submit", function (e) {
+  // ----------------------
+  // REGISTRAR RESERVA
+  // ----------------------
+  form.addEventListener("submit", async e => {
     e.preventDefault();
+    const sede = normalizarSede(form.sede.value);
+    const nombre = form.nombre.value;
+    const dia = form.dia.value;
+    const fecha = form.fecha.value;
+    const hora = form.hora.value;
+    const personas = form.personas.value;
+    const contacto = form.contacto.value;
+    const responsable = form.responsable?.value || "";
+    const observacion = form.observacion?.value || "";
 
-    const reserva = {
-        id: idEdicion ? idEdicion : Date.now(),
-        sede: document.getElementById("sede").value,
-        nombre: document.getElementById("nombre").value,
-        dia: document.getElementById("dia").value,
-        fecha: document.getElementById("fecha").value,
-        hora: document.getElementById("hora").value,
-        personas: document.getElementById("personas").value,
-        contacto: document.getElementById("contacto").value
-    };
-
-    // Validar duplicados
-    if (!idEdicion && reservaDuplicada(reserva)) {
-        alert("❌ Ya existe una reserva en esa sede, fecha y hora.");
-        return;
+    if (!sede || !nombre || !fecha || !hora || !personas || !contacto) {
+      alert("⚠️ Complete todos los campos");
+      return;
     }
 
-    if (idEdicion) {
-        actualizarReserva(reserva);
-        idEdicion = null;
-        alert("✔️ Reserva editada.");
-    } else {
-        guardarReserva(reserva);
-        alert("✔️ Reserva creada.");
+    try {
+      const nuevaReservaRef = push(ref(db, `reservas/${sede}`));
+      await set(nuevaReservaRef, {
+        id: nuevaReservaRef.key,
+        sede,
+        nombre,
+        dia,
+        fecha,
+        hora,
+        personas,
+        contacto,
+        responsable,
+        observacion,
+        estado: "pendiente" // <-- usamos string para controlar mejor
+      });
+      alert("✅ Reserva registrada correctamente");
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      alert("❌ Error al registrar la reserva");
     }
+  });
 
-    limpiarTabla();
-    cargarReservas();
-    actualizarDashboard();
-    form.reset();
+  // ----------------------
+  // LEER RESERVAS Y ACTUALIZAR TABLA
+  // ----------------------
+  onValue(ref(db, "reservas"), snapshot => {
+    tabla.innerHTML = "";
+    let total = 0, cab = 0, can = 0, pie = 0;
 
-    if (rolUsuario !== "administrador") {
-        document.getElementById("sede").value = capitalizar(rolUsuario);
-    }
-});
+    snapshot.forEach(sedeSnap => {
+      sedeSnap.forEach(reservaSnap => {
+        const r = reservaSnap.val();
+        if (!r.fecha) return;
 
-// ===============================
-// FUNCIONES CRUD
-// ===============================
-function reservaDuplicada(reservaNueva) {
-    let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
+        total++;
+        const sedeNormalizada = normalizarSede(r.sede);
+        if (sedeNormalizada === "cabecera") cab++;
+        if (sedeNormalizada === "canaveral") can++;
+        if (sedeNormalizada === "piedecuesta") pie++;
 
-    return reservas.some(r =>
-        r.sede === reservaNueva.sede &&
-        r.fecha === reservaNueva.fecha &&
-        r.hora === reservaNueva.hora
-    );
-}
+        const tr = document.createElement("tr");
+        tr.style.background = r.estado === "aceptada" ? "#d4edda" : ""; // verde si aceptada
 
-function guardarReserva(reserva) {
-    let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
-    reservas.push(reserva);
-    localStorage.setItem("reservasDrivePizza", JSON.stringify(reservas));
-}
+        tr.innerHTML = `
+          <td>${r.sede}</td>
+          <td>${r.nombre}</td>
+          <td>${r.fecha}</td>
+          <td>${r.hora}</td>
+          <td>${r.personas}</td>
+          <td>${r.contacto}</td>
+          <td>${r.responsable || ""}</td>
+          <td>${r.observacion || ""}</td>
+          <td>${r.estado}</td>
+          <td></td>
+        `;
+        tabla.appendChild(tr);
 
-function actualizarReserva(reservaActualizada) {
-    let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
-    reservas = reservas.map(r => r.id === reservaActualizada.id ? reservaActualizada : r);
-    localStorage.setItem("reservasDrivePizza", JSON.stringify(reservas));
-}
+        const accionesTd = tr.querySelector("td:last-child");
 
-function cargarReservas() {
-    let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
-
-    reservas.forEach(r => {
-        if (rolUsuario !== "administrador" && r.sede.toLowerCase() !== rolUsuario) {
-            return;
+        // Botón aceptar solo si está pendiente
+        if (r.estado === "pendiente") {
+          const btnAceptar = document.createElement("button");
+          btnAceptar.textContent = "✅ Aceptar";
+          btnAceptar.addEventListener("click", async () => {
+            await update(ref(db, `reservas/${sedeNormalizada}/${r.id}`), { estado: "aceptada" });
+          });
+          accionesTd.appendChild(btnAceptar);
         }
-        agregarFilaTabla(r);
+
+        // Botón cancelar
+        const btnCancelar = document.createElement("button");
+        btnCancelar.textContent = "❌ Cancelar";
+        btnCancelar.addEventListener("click", async () => {
+          await update(ref(db, `reservas/${sedeNormalizada}/${r.id}`), { estado: "cancelada" });
+        });
+        accionesTd.appendChild(btnCancelar);
+
+        // Botón eliminar
+        const btnEliminar = document.createElement("button");
+        btnEliminar.textContent = "🗑 Eliminar";
+        btnEliminar.addEventListener("click", async () => {
+          if (confirm("¿Eliminar esta reserva?")) {
+            await remove(ref(db, `reservas/${sedeNormalizada}/${r.id}`));
+          }
+        });
+        accionesTd.appendChild(btnEliminar);
+      });
     });
-}
 
-function limpiarTabla() {
-    tablaBody.innerHTML = "";
-}
-
-function agregarFilaTabla(reserva) {
-    const fila = document.createElement("tr");
-
-    fila.innerHTML = `
-        <td>${reserva.sede}</td>
-        <td>${reserva.nombre}</td>
-        <td>${reserva.fecha}</td>
-        <td>${reserva.hora}</td>
-        <td>${reserva.personas}</td>
-        <td>${reserva.contacto}</td>
-        <td>
-            <button class="btnEditar" onclick="editarReserva(${reserva.id})">✏️</button>
-            <button class="btnEliminar" onclick="eliminarReserva(${reserva.id})">🗑️</button>
-        </td>
-    `;
-
-    tablaBody.appendChild(fila);
-}
-
-function eliminarReserva(id) {
-    if (confirm("¿Eliminar reserva?")) {
-        let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
-        reservas = reservas.filter(r => r.id !== id);
-        localStorage.setItem("reservasDrivePizza", JSON.stringify(reservas));
-
-        limpiarTabla();
-        cargarReservas();
-        actualizarDashboard();
-
-        alert("🗑️ Reserva eliminada.");
-    }
-}
-
-function editarReserva(id) {
-    let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
-    const reserva = reservas.find(r => r.id === id);
-
-    document.getElementById("sede").value = reserva.sede;
-    document.getElementById("nombre").value = reserva.nombre;
-    document.getElementById("dia").value = reserva.dia;
-    document.getElementById("fecha").value = reserva.fecha;
-    document.getElementById("hora").value = reserva.hora;
-    document.getElementById("personas").value = reserva.personas;
-    document.getElementById("contacto").value = reserva.contacto;
-
-    idEdicion = id;
-
-    alert("✏️ Editando reserva...");
-}
-
-// ===============================
-// 🟦 DASHBOARD
-// ===============================
-function actualizarDashboard() {
-    let reservas = JSON.parse(localStorage.getItem("reservasDrivePizza")) || [];
-
-    let visibles = rolUsuario === "administrador"
-        ? reservas
-        : reservas.filter(r => r.sede.toLowerCase() === rolUsuario);
-
-    totalReservasTXT.textContent = visibles.length;
-
-    canaveralTXT.textContent = visibles.filter(r => r.sede === "Cañaveral").length;
-    piedecuestaTXT.textContent = visibles.filter(r => r.sede === "Piedecuesta").length;
-    cabeceraTXT.textContent = visibles.filter(r => r.sede === "Cabecera").length;
-
-    actualizarProximos(visibles);
-}
-
-function actualizarProximos(reservas) {
-    proximosClientesList.innerHTML = "";
-
-    let ordenados = reservas.sort((a, b) =>
-        new Date(a.fecha + " " + a.hora) - new Date(b.fecha + " " + b.hora)
-    );
-
-    ordenados.slice(0, 5).forEach(r => {
-        let li = document.createElement("li");
-        li.textContent = `${r.nombre} - ${r.sede} | ${r.fecha} ${r.hora}`;
-        proximosClientesList.appendChild(li);
-    });
-}
-
-// ===============================
-// CERRAR SESIÓN
-// ===============================
-function cerrarSesion() {
-    localStorage.removeItem("rolUsuario");
-    window.location.href = "login.html";
-}
-
-// ===============================
-// UTILIDAD
-// ===============================
-function capitalizar(texto) {
-    return texto.charAt(0).toUpperCase() + texto.slice(1);
-}
-
-// ===============================
-// OCULTAR CARDS SEGÚN ROL
-// ===============================
-if (rolUsuario !== "administrador") {
-
-    // Ocultar totales de sedes que NO sean la del usuario
-    if (rolUsuario !== "cañaveral") {
-        document.querySelector(".sede-canaveral").style.display = "none";
-    }
-
-    if (rolUsuario !== "piedecuesta") {
-        document.querySelector(".sede-piedecuesta").style.display = "none";
-    }
-
-    if (rolUsuario !== "cabecera") {
-        document.querySelector(".sede-cabecera").style.display = "none";
-    }
-
-    // Ocultar total general (solo admin lo ve)
-    document.querySelector(".total-general").style.display = "none";
-}
-
+    totalReservas.textContent = total;
+    reservasCabecera.textContent = cab;
+    reservascanaveral.textContent = can;
+    reservasPiedecuesta.textContent = pie;
+  });
+});

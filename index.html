@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DrivePizza - Sistema de Reservas</title>
-
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -17,79 +16,48 @@
         <h2>Sistema de Reservas</h2>
     </header>
 
-    <!-- ============================
-          DASHBOARD ADMINISTRATIVO
-    ============================= -->
+    <!-- Dashboard administrativo -->
     <section class="dashboard">
         <h2>📊 Panel Administrativo</h2>
-
         <div class="dash-cards">
-
-           <!-- Total de reservas -->
-<div class="dash-card total-general">
-    <h3>Total Reservas</h3>
-    <p id="totalReservas">0</p>
-</div>
-<div id="popupPendientes" class="popup">
-    <div class="popup-content">
-        <h2>Reservas Pendientes de Hoy</h2>
-        <ul id="listaPendientesHoy"></ul>
-
-    </div>
-</div>
-
-
-<!-- Reservas Cañaveral -->
-<div class="dash-card sede-canaveral">
-    <h3>Sede Cañaveral</h3>
-    <p id="reservasCanaveral">0</p>
-</div>
-
-<!-- Reservas Piedecuesta -->
-<div class="dash-card sede-piedecuesta">
-    <h3>Sede Piedecuesta</h3>
-    <p id="reservasPiedecuesta">0</p>
-</div>
-
-<!-- Reservas Cabecera -->
-<div class="dash-card sede-cabecera">
-    <h3>Sede Cabecera</h3>
-    <p id="reservasCabecera">0</p>
-</div>
-
-<!-- Próximos Clientes -->
-<div class="dash-card wide proximos">
-    <h3>Próximos Clientes</h3>
-    <ul id="proximosClientes"></ul>
-</div>
-
-
+            <div class="dash-card total-general">
+                <h3>Total Reservas</h3>
+                <p id="totalReservas">0</p>
+            </div>
+            <div class="dash-card sede-canaveral">
+                <h3>Sede Cañaveral</h3>
+                <p id="reservascanaveral">0</p>
+            </div>
+            <div class="dash-card sede-piedecuesta">
+                <h3>Sede Piedecuesta</h3>
+                <p id="reservasPiedecuesta">0</p>
+            </div>
+            <div class="dash-card sede-cabecera">
+                <h3>Sede Cabecera</h3>
+                <p id="reservasCabecera">0</p>
+            </div>
         </div>
     </section>
 
     <!-- Contenedor principal -->
     <main class="container">
 
+        <!-- Formulario de reserva -->
         <form id="formReserva" class="form">
-
             <h3>Realizar Reserva</h3>
-
-            <!-- Sede -->
             <label for="sede">Sede:</label>
-            <select id="sede" required>
+            <select id="sede" name="sede" required>
                 <option value="">Seleccione una sede</option>
-                <option value="Cañaveral">Cañaveral</option>
-                <option value="Piedecuesta">Piedecuesta</option>
-                <option value="Cabecera">Cabecera</option>
+                <option value="canaveral">Cañaveral</option>
+                <option value="piedecuesta">Piedecuesta</option>
+                <option value="cabecera">Cabecera</option>
             </select>
 
-            <!-- Nombre completo -->
             <label for="nombre">Nombre completo:</label>
-            <input type="text" id="nombre" placeholder="Ej: Deisy Garzón" required>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej: Deisy Garzón" required>
 
-            <!-- Día -->
             <label for="dia">Día:</label>
-            <select id="dia" required>
+            <select id="dia" name="dia" required>
                 <option value="">Seleccione</option>
                 <option>Viernes</option>
                 <option>Sábado</option>
@@ -100,27 +68,28 @@
                 <option>Jueves</option>
             </select>
 
-            <!-- Fecha -->
             <label for="fecha">Fecha:</label>
-            <input type="date" id="fecha" required>
+            <input type="date" id="fecha" name="fecha" required>
 
-            <!-- Hora -->
             <label for="hora">Hora:</label>
-            <input type="time" id="hora" required>
+            <input type="time" id="hora" name="hora" required>
 
-            <!-- Cantidad de personas -->
             <label for="personas">Cantidad de personas:</label>
-            <input type="number" id="personas" min="1" placeholder="Ej: 6" required>
+            <input type="number" id="personas" name="personas" min="1" placeholder="Ej: 6" required>
 
-            <!-- Número de contacto -->
             <label for="contacto">Número de contacto:</label>
-            <input type="tel" id="contacto" placeholder="Ej: 3153471416" maxlength="10" required>
+            <input type="tel" id="contacto" name="contacto" placeholder="Ej: 3153471416" maxlength="10" required>
+
+            <label for="responsable">Responsable:</label>
+            <input type="text" id="responsable" name="responsable" placeholder="Nombre del responsable">
+
+            <label for="observacion">Observación:</label>
+            <textarea id="observacion" name="observacion" placeholder="Alguna observación..."></textarea>
 
             <button type="submit" class="btn" id="btnSubmit">Registrar Reserva</button>
-
         </form>
 
-        <!-- Contenedor para mostrar las reservas -->
+        <!-- Tabla de reservas -->
         <section class="reservas">
             <h3>Reservas Registradas</h3>
             <table id="tablaReservas">
@@ -132,6 +101,9 @@
                         <th>Hora</th>
                         <th>Personas</th>
                         <th>Contacto</th>
+                        <th>Responsable</th>
+                        <th>Observación</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -141,6 +113,8 @@
 
     </main>
 
-    <script src="script.js"></script>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>
 
 </body>
+</html>

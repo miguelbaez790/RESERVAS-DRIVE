@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Drive Pizza Cañaveral – Reservas</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    /* RESET Y TIPOGRAFÍA */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #fceabb, #f8b500);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* ENCABEZADO PROFESIONAL */
+    .header {
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 30px;
+        background: #d63232;
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        border-radius: 0 0 15px 15px;
+        position: fixed;
+        top: 0;
+        z-index: 1000;
+    }
+    .header img { height: 60px; }
+    .header h1 { font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+
+    /* CONTENEDOR PRINCIPAL */
+    .main-container {
+        display: flex;
+        max-width: 1200px;
+        width: 100%;
+        margin-top: 100px;
+        gap: 25px;
+        padding: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* CALENDARIO MODERNO */
+    .calendar {
+        width: 360px;
+        background: #fff;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        transition: transform 0.3s;
+    }
+    .calendar:hover { transform: translateY(-5px); }
+    .calendar h2 {
+        text-align: center;
+        font-size: 22px;
+        margin-bottom: 15px;
+        color: #d63232;
+    }
+    .month-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .month-nav button {
+        padding: 8px 15px;
+        background: #d63232;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .month-nav button:hover { background: #a01f1f; }
+    .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+    }
+    .day {
+        padding: 15px 0;
+        background: #ffe5b4;
+        text-align: center;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #d63232;
+    }
+    .day:hover { background: #d63232; color: #fff; transform: scale(1.1); }
+    .day.reservado { background: #ffb3b3; border: 2px solid #d63232; }
+
+    /* PANEL DE RESERVAS PROFESIONAL */
+    .reservas-panel {
+        flex: 1;
+        min-width: 400px;
+        max-height: 600px;
+        overflow-y: auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    .reservas-panel h3 {
+        font-size: 20px;
+        margin-bottom: 15px;
+        color: #d63232;
+    }
+    .reserva-item {
+        border-left: 5px solid #d63232;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: #fff5f5;
+        border-radius: 12px;
+        transition: transform 0.3s;
+    }
+    .reserva-item:hover { transform: translateX(5px); }
+    .reserva-item h4 { color: #d63232; margin-bottom: 5px; }
+    .reserva-item p { font-size: 14px; color: #555; margin: 3px 0; }
+
+    /* BOTÓN ACEPTAR RESERVA */
+    .aceptar-btn {
+        padding: 6px 12px;
+        background: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 8px;
+        transition: 0.3s;
+    }
+    .aceptar-btn:hover { background: #218838; }
+
+    /* SCROLL PERSONALIZADO */
+    .reservas-panel::-webkit-scrollbar {
+        width: 8px;
+    }
+    .reservas-panel::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 8px;
+    }
+    .reservas-panel::-webkit-scrollbar-thumb {
+        background: #d63232;
+        border-radius: 8px;
+    }
+</style>
+</head>
+<body>
+
+<!-- ENCABEZADO -->
+<div class="header">
+    <img src="logo.png" alt="Logo Drive Pizza">
+    <h1>Drive Pizza Cañaveral – Reservas</h1>
+</div>
+
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="main-container">
+
+    <!-- CALENDARIO -->
+    <div class="calendar">
+        <div class="month-nav">
+            <button id="prevMonth">&lt;</button>
+            <span id="monthYear">Diciembre 2025</span>
+            <button id="nextMonth">&gt;</button>
+        </div>
+        <div class="days" id="dias"></div>
+    </div>
+
+    <!-- PANEL DE RESERVAS -->
+    <div class="reservas-panel" id="reservasPanel">
+        <h3>Selecciona un día para ver las reservas</h3>
+        <!-- Aquí se generarán dinámicamente las reservas desde Firebase con botón "Aceptar" -->
+    </div>
+
+</div>
+
+<script type="module" src="cañaveral.js"></script>
+<script type="module" src="firebase.js"></script>
+
+</body>
+</html>

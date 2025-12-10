@@ -1,22 +1,17 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// firebase.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCWfZj1D74LuyoqM0QpHadX4qjEuxlxn_I",
-  authDomain: "drive-pizza-b1ff2.firebaseapp.com",
-  databaseURL: "https://drive-pizza-b1ff2-default-rtdb.firebaseio.com",
-  projectId: "drive-pizza-b1ff2",
-  storageBucket: "drive-pizza-b1ff2.firebasestorage.app",
-  messagingSenderId: "607565607786",
-  appId: "1:607565607786:web:e4e0ec082c6163d34aab13",
-  measurementId: "G-GRPK9N1M2M"
+  apiKey: "AIzaSyDAgLky3ub0feeA1mnH-yueExhlUCLvOxs",
+  authDomain: "reservas-drive-pizza.firebaseapp.com",
+  databaseURL: "https://reservas-drive-pizza-default-rtdb.firebaseio.com",
+  projectId: "reservas-drive-pizza",
+  storageBucket: "reservas-drive-pizza.appspot.com",
+  messagingSenderId: "343129946622",
+  appId: "1:343129946622:web:174dd1be5bb8e5243de8af",
+  measurementId: "G-EBG90VNT0Z"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const db = getDatabase(app);
