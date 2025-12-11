@@ -9,6 +9,14 @@
 </head>
 
 <body>
+    <script>
+const usuarioActivo = localStorage.getItem("usuarioActivo");
+if (!usuarioActivo) {
+    // Si no hay usuario logueado, redirige al login
+    window.location.href = "login.html";
+}
+</script>
+
 
     <!-- Encabezado -->
     <header class="header">
