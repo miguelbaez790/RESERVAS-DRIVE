@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DrivePizza - Sistema de Reservas</title>
     <link rel="stylesheet" href="styles.css">
-    <script>
-        // Verifica sesión al cargar la página
-        if(localStorage.getItem("loggedIn") !== "true") {
-            window.location.href = "login.html";
-        }
-    </script>
 </head>
+
 <body>
 
     <!-- Encabezado -->
     <header class="header">
         <h1>🍕 DrivePizza</h1>
         <h2>Sistema de Reservas</h2>
-        <button id="btnLogout" style="float:right;">Cerrar sesión</button>
     </header>
 
     <!-- Dashboard administrativo -->
@@ -120,24 +115,6 @@
 
     <script type="module" src="firebase.js"></script>
     <script type="module" src="script.js"></script>
-    <script>
-    // Verifica si el usuario está logueado
-    if (localStorage.getItem("loggedIn") !== "true") {
-        // Si no hay sesión, redirige automáticamente a login.html
-        window.location.href = "login.html";
-    }
-</script>
-
-
-    <script>
-        // Botón de logout
-        const btnLogout = document.getElementById('btnLogout');
-        btnLogout.addEventListener('click', () => {
-            localStorage.removeItem('loggedIn');
-            window.location.href = 'login.html';
-        });
-    </script>
 
 </body>
 </html>
-
