@@ -120,6 +120,14 @@
 
     <script type="module" src="firebase.js"></script>
     <script type="module" src="script.js"></script>
+    <script>
+    // Verifica si el usuario está logueado
+    if (localStorage.getItem("loggedIn") !== "true") {
+        // Si no hay sesión, redirige automáticamente a login.html
+        window.location.href = "login.html";
+    }
+</script>
+
 
     <script>
         // Botón de logout
